@@ -1,0 +1,26 @@
+<div class="container">
+    <form class="emp-form" (ngSubmit)="redirect('submission')">
+        <div class="row mb-3">
+            <label for="emp_id" class="col-sm-2 col-form-label">Employee ID</label>
+            <div class="col-sm-10">
+                <input type="number" class="form-control" id="emp_id" [disabled]="true" [value]="empId">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="emp_name" class="col-sm-2 col-form-label">Employee Name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="emp_name" [(ngModel)]="empName" [ngModelOptions]="{standalone: true}" [value]="empName">
+            </div>
+        </div>
+        
+        <div class="row mb-3">
+            <label for="emp_age" class="col-sm-2 col-form-label">Employee Age</label>
+            <div class="col-sm-10">
+                <input type="number" class="form-control" id="emp_age" [(ngModel)]="empAge" [ngModelOptions]="{standalone: true}" [value]="empAge">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" (click)="onClickSubmit()">Submit</button><br>
+        <button class="btn btn-danger" id="backbtn" (click)="redirect('noSubmission')">Back</button>
+      </form>
+</div>
+

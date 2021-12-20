@@ -1,0 +1,19 @@
+<div class="container">
+    <form class="dept-form" (ngSubmit)="redirect('submission')">
+        <div class="row mb-3">
+            <label for="dept_id" class="col-sm-2 col-form-label">Department ID</label>
+            <div class="col-sm-10">
+                <input type="number" class="form-control" id="dept_id" [disabled]="true" [value]="deptId">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="dept_name" class="col-sm-2 col-form-label">Department Name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="dept_name" [(ngModel)]="deptName" [ngModelOptions]="{standalone: true}" [value]="deptName">
+            </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" (click)="onClickSubmit()">Submit</button><br>
+        <button class="btn btn-danger" id="backbtn" (click)="redirect('noSubmission')">Back</button>
+      </form>
+</div>

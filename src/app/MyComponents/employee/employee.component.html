@@ -1,0 +1,48 @@
+<div class="container">
+    <div class="upper-wrapper">
+        <div class="col-sm-5 ">
+            <input type="text" class="form-control" id="search-bar" placeholder="Search..." [(ngModel)]="filter">
+        </div>
+        <div>
+            <button class="btn btn-secondary" id="searchbtn" (click)="search()">Search</button>
+            <button class="btn btn-secondary" id="clearbtn" (click)="clear()">Clear</button>
+            <button class="btn btn-success" id="addbtn" [routerLink]="['/addEmpData']">ADD</button>
+        </div>
+    </div>
+    <table class="table table-bordered table-hover table-striped" id="emp-table">
+        <thead class="table-dark" >
+            <tr>
+                <th [hidden]="true">EMPLOYEE ID &nbsp;<fa-icon [icon]="sortIcon"></fa-icon></th>
+                <th (click)="sort('name')">EMPLOYEE NAME &nbsp;<fa-icon [icon]="sortIcon"></fa-icon></th>
+                <th (click)="sort('age')">EMPLOYEE AGE &nbsp;<fa-icon [icon]="sortIcon"></fa-icon></th>
+                <th>ACTION</th>
+            </tr>
+        </thead>
+        <tbody id="tbody" *ngFor="let emp of empData">
+            <tr>
+                <td [hidden]="true">{{emp.id}}</td>
+                <td>{{emp.name}}</td>
+                <td>{{emp.age}}</td>
+                <td><button class="btn btn-warning" (click)="onEdit(emp)">Edit</button>
+                    <button class="btn btn-danger" (click)="onDelete(emp)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation example" *ngIf="empData.length > 0">
+        <ul class="pagination justify-content-center">
+            <li class="page-item  first" (click)="first()"><a class="page-link"><fa-icon [icon]="doubleArrowLeft"></fa-icon> &nbsp;First</a></li>
+            <li class="page-item" (click)="prev()"><a class="page-link"><fa-icon [icon]="singleArrowLeft"></fa-icon> &nbsp;Previous</a></li>
+            <li class="page-item" (click)="next()"><a class="page-link">Next &nbsp;<fa-icon [icon]="singleArrowRight"></fa-icon></a></li>
+            <li class="page-item last" (click)="last()"><a class="page-link">Last &nbsp;<fa-icon [icon]="doubleArrowRight"></fa-icon></a></li>
+        </ul> 
+    </nav>
+    <div class="pageInfo" *ngIf="empData.length > 0">
+        <p>Showing {{page}} of {{totalPages}} pages</p>
+    </div>
+
+    <div class="pageInfo" *ngIf="empData.length == 0">
+        <p>Data not found!</p>
+    </div>
+</div>
