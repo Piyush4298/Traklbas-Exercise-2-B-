@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { empData } from 'src/app/dataUtil';
+import { EmployeeData } from 'src/app/dataUtil';
 import {LocalStorageService, SessionStorageService} from 'ngx-webstorage'
 
 @Component({
@@ -13,8 +13,8 @@ export class AddEmpDataComponent implements OnInit {
   empId!: number
   empName!: string
   empAge!: number
-  empArray!: empData[]
-  empObj = new empData()
+  empArray!: EmployeeData[]
+  empObj = new EmployeeData()
   constructor(private router: Router, private localStore: LocalStorageService, private sessionStore: SessionStorageService) {
     if(this.localStore.retrieve("hasCodeRunBefore1") === null){
       this.empArray = [];

@@ -8,6 +8,7 @@ import { DepartmentComponent } from './MyComponents/department/department.compon
 import { EmployeeComponent } from './MyComponents/employee/employee.component';
 import { HomeComponent } from './MyComponents/home/home.component';
 import { AuthguardService } from './services/authguard.service';
+//import { AuthguardService } from './services/authguard.service';
 
 const routes: Routes = [
   { path: '', redirectTo:'/home', pathMatch: 'full'},
@@ -17,6 +18,12 @@ const routes: Routes = [
   { path: 'department', component: DepartmentComponent, canActivate: [AuthguardService] },
   { path: 'addEmpData', component: AddEmpDataComponent, canActivate: [AuthguardService]},
   { path: 'addDeptData', component: AddDeptDataComponent, canActivate: [AuthguardService]}
+  // { path: 'home', component: HomeComponent},
+  // { path: 'auth-callback', component: AuthCallbackComponent },
+  // { path: 'employee', component: EmployeeComponent},
+  // { path: 'department', component: DepartmentComponent},
+  // { path: 'addEmpData', component: AddEmpDataComponent},
+  // { path: 'addDeptData', component: AddDeptDataComponent}
 ];
 
 @NgModule({

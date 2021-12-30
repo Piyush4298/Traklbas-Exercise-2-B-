@@ -1,0 +1,8 @@
+export class AppConstants{
+    public static readonly AUTHENTICATION_STAGES = {
+        STARTED_AUTHENTICATION: 'STARTED_AUTHENTICATION',
+        COMPLETE_AUTHENTICATION: 'COMPLETE_AUTHENTICATION',
+        SIGN_OUT: 'SIGN-OUT',
+        SIGNED_OUT: 'SIGNED_OUT'
+      };
+}

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { empData, functionUtils } from 'src/app/dataUtil';
+import { EmployeeData } from 'src/app/dataUtil';
 import { LocalStorageService, SessionStorageService } from 'ngx-webstorage';
 import { faSort, faChevronLeft, faChevronRight, faAngleDoubleLeft, faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
+import { BaseComponent } from '../base/base.component';
 
 
 @Component({
@@ -10,7 +11,7 @@ import { Router } from '@angular/router';
   templateUrl: './employee.component.html',
   styleUrls: ['./employee.component.css']
 })
-export class EmployeeComponent extends functionUtils implements OnInit {
+export class EmployeeComponent extends BaseComponent<EmployeeData> implements OnInit {
 
   /* font-awesome Icons */
   sortIcon = faSort
@@ -19,8 +20,8 @@ export class EmployeeComponent extends functionUtils implements OnInit {
   doubleArrowLeft = faAngleDoubleLeft
   doubleArrowRight = faAngleDoubleRight
 
-  totalEmpData: empData[] = []
-  empData: empData[] = []
+  totalEmpData: EmployeeData[] = []
+  empData: EmployeeData[] = []
   
   filter: any
   fromSearch: boolean = false
@@ -37,7 +38,7 @@ export class EmployeeComponent extends functionUtils implements OnInit {
   }
 
 
-  ngOnInit(){
+  override ngOnInit(){
     if(this.localStore.retrieve("currPageEmp") === null){
       this.localStore.store("currPageEmp", 1)
     }

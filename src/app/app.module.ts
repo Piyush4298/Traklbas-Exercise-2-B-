@@ -16,6 +16,8 @@ import { NgxWebstorageModule } from 'ngx-webstorage';
 import { AuthguardService } from './services/authguard.service';
 import { AuthService } from './services/auth.service';
 import { AuthCallbackComponent } from './MyComponents/auth-callback/auth-callback.component';
+import { BaseComponent } from './MyComponents/base/base.component';
+
 
 @NgModule({
   declarations: [
@@ -25,7 +27,8 @@ import { AuthCallbackComponent } from './MyComponents/auth-callback/auth-callbac
     HomeComponent,
     AddEmpDataComponent,
     AddDeptDataComponent,
-    AuthCallbackComponent
+    AuthCallbackComponent,
+    BaseComponent
   ],
   imports: [
     BrowserModule,

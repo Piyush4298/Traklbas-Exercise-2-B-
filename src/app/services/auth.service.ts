@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UserManager, UserManagerSettings, User } from 'oidc-client';
+import { AppConstants } from '../constants/AppConstants';
+
 
 @Injectable({
   providedIn: 'root'
@@ -20,24 +22,41 @@ export class AuthService {
   }
 
   getClaims(): any {
-    return this.user.profile;
+    if ((this.user) == null) {
+      return null;
+    }
+    else {
+      return this.user.profile == null ? '' : this.user.profile;
+    }
   }
 
   getAuthorizationHeaderValue(): string {
     return `${this.user.token_type} ${this.user.access_token}`;
   }
 
-  startAuthentication(): Promise<void> {
-    return this.manager.signinRedirect();
+  startAuthentication(): Promise<any> {
+    return this.manager.signinRedirect().then(data =>{
+      sessionStorage.setItem("STAGE", AppConstants.AUTHENTICATION_STAGES.STARTED_AUTHENTICATION);
+    });
   }
 
-  async completeAuthentication(): Promise<void> {
-    const user = await this.manager.signinRedirectCallback();
-    this.user = user;
+  completeAuthentication(): Promise<any> {
+    return this.manager.signinRedirectCallback().then(user => {
+        this.user = user;
+        sessionStorage.setItem("STAGE", AppConstants.AUTHENTICATION_STAGES.COMPLETE_AUTHENTICATION);
+        sessionStorage.setItem('expires_at', this.user.expires_at.toString());
+    });
   }
   
   logout(){
-    this.manager.signoutRedirect();
+    sessionStorage.setItem("STAGE", AppConstants.AUTHENTICATION_STAGES.SIGN_OUT);
+    this.manager.removeUser().then(d=>{
+      this.manager.signoutRedirect();
+      this.manager.signoutRedirectCallback().then(x=>{
+        sessionStorage.setItem("STAGE", AppConstants.AUTHENTICATION_STAGES.SIGNED_OUT);
+        //this.startAuthentication();
+      });
+    });
   }
 }
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { deptData } from 'src/app/dataUtil';
+import { DepartmentData } from 'src/app/dataUtil';
 import { LocalStorageService, SessionStorageService } from 'ngx-webstorage';
 
 @Component({
@@ -12,8 +12,8 @@ export class AddDeptDataComponent implements OnInit {
 
   deptId!: number
   deptName!: string
-  deptArray!: deptData[]
-  deptObj = new deptData()
+  deptArray!: DepartmentData[]
+  deptObj = new DepartmentData()
   constructor(private router: Router, private localStore: LocalStorageService, private sessionStore: SessionStorageService) {
     if(this.localStore.retrieve("hasCodeRunBefore2") === null){
       this.deptArray = [];

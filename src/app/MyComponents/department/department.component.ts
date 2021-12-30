@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { deptData, functionUtils } from 'src/app/dataUtil';
+import { DepartmentData} from 'src/app/dataUtil';
 import { LocalStorageService, SessionStorageService } from 'ngx-webstorage';
 import { faSort, faAngleDoubleRight, faAngleDoubleLeft, faChevronRight, faChevronLeft} from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
+import { BaseComponent } from '../base/base.component';
 
 @Component({
   selector: 'app-department',
   templateUrl: './department.component.html',
   styleUrls: ['./department.component.css']
 })
-export class DepartmentComponent extends functionUtils implements OnInit {
+export class DepartmentComponent extends BaseComponent<DepartmentData> implements OnInit {
 
   sortIcon = faSort
   singleArrowLeft = faChevronLeft
@@ -18,8 +19,8 @@ export class DepartmentComponent extends functionUtils implements OnInit {
   doubleArrowRight = faAngleDoubleRight
 
 
-  totalDeptData: deptData[] = []
-  deptData: deptData[] = []
+  totalDeptData: DepartmentData[] = []
+  deptData: DepartmentData[] = []
   
   filter: any
   fromSearch: boolean = false
@@ -35,7 +36,7 @@ export class DepartmentComponent extends functionUtils implements OnInit {
   }
 
 
-  ngOnInit(){
+  override ngOnInit(){
     if(this.localStore.retrieve("currPageDept") === null){
       this.localStore.store("currPageDept", 1)
     }

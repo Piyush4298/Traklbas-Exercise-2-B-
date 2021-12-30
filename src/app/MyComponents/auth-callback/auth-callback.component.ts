@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AppConstants } from 'src/app/constants/AppConstants';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -12,9 +13,17 @@ export class AuthCallbackComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
-    this.authService.completeAuthentication();
+    //this.authService.completeAuthentication();
 
-    this.router.navigate(['/home']);
+    if(sessionStorage.getItem("STAGE") != null && sessionStorage.getItem("STAGE") == AppConstants.AUTHENTICATION_STAGES.COMPLETE_AUTHENTICATION){
+      this.router.navigate(['/home']);
+    }else if(sessionStorage.getItem("STAGE") != null && sessionStorage.getItem("STAGE") == AppConstants.AUTHENTICATION_STAGES.STARTED_AUTHENTICATION){
+      this.authService.completeAuthentication().then(x=>{
+        this.router.navigate(['/home']);
+      });
+    }else if(sessionStorage.getItem("STAGE")!=null && sessionStorage.getItem("STAGE") == AppConstants.AUTHENTICATION_STAGES.SIGNED_OUT){
+      //this.authService.logout();
+    }
   }
 
 }
