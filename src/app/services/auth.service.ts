@@ -48,16 +48,16 @@ export class AuthService {
     });
   }
   
-  logout(){
-    sessionStorage.setItem("STAGE", AppConstants.AUTHENTICATION_STAGES.SIGN_OUT);
-    this.manager.removeUser().then(d=>{
-      this.manager.signoutRedirect();
-      this.manager.signoutRedirectCallback().then(x=>{
-        sessionStorage.setItem("STAGE", AppConstants.AUTHENTICATION_STAGES.SIGNED_OUT);
-        //this.startAuthentication();
-      });
-    });
-  }
+  // logout(){
+  //   sessionStorage.setItem("STAGE", AppConstants.AUTHENTICATION_STAGES.SIGN_OUT);
+  //   this.manager.removeUser().then(d=>{
+  //     this.manager.signoutRedirect();
+  //     this.manager.signoutRedirectCallback().then(x=>{
+  //       sessionStorage.setItem("STAGE", AppConstants.AUTHENTICATION_STAGES.SIGNED_OUT);
+  //       //this.startAuthentication();
+  //     });
+  //   });
+  // }
 }
 
 export function getClientSettings(): UserManagerSettings{

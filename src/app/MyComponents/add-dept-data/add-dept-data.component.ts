@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DepartmentData } from 'src/app/dataUtil';
-import { LocalStorageService, SessionStorageService } from 'ngx-webstorage';
 
 @Component({
   selector: 'app-add-dept-data',
@@ -14,28 +13,29 @@ export class AddDeptDataComponent implements OnInit {
   deptName!: string
   deptArray!: DepartmentData[]
   deptObj = new DepartmentData()
-  constructor(private router: Router, private localStore: LocalStorageService, private sessionStore: SessionStorageService) {
-    if(this.localStore.retrieve("hasCodeRunBefore2") === null){
+  
+  constructor(private router: Router) {
+    if(localStorage.getItem("hasCodeRunBefore2") === null ){
       this.deptArray = [];
-      this.localStore.store("hasCodeRunBefore2", true);
-      this.localStore.store("currDeptID", 0);
+      localStorage.setItem("hasCodeRunBefore2", JSON.stringify(true))
+      localStorage.setItem("currDeptId", JSON.stringify(0))
     }
     else{
-      this.deptArray = this.localStore.retrieve("deptArray");
+      this.deptArray = JSON.parse(localStorage.getItem("deptArray") || "[]");
     }
 
   }
 
   ngOnInit(): void {
-    if(this.sessionStore.retrieve("fromEditDepartment") === false){
-      this.deptId = this.localStore.retrieve("currDeptID") + 1
-      this.localStore.store("currDeptID", this.deptId);
+    if(JSON.parse(sessionStorage.getItem("fromEditDepartment")|| '') === false){
+      this.deptId = +JSON.parse(localStorage.getItem("currDeptID")||'0') + 1
+      localStorage.setItem("currDeptID", JSON.stringify(this.deptId));
     }
     else{
-      this.deptObj = this.sessionStore.retrieve("deptObjectToEdit")
+      this.deptObj = JSON.parse(sessionStorage.getItem("deptObjectToEdit")||'')
       this.deptId = this.deptObj.id
       this.deptName = this.deptObj.name
-      this.sessionStore.store("fromEditDepartment", false)
+      sessionStorage.setItem("fromEditDepartment", JSON.stringify(false))
     }
   }
 
@@ -44,16 +44,15 @@ export class AddDeptDataComponent implements OnInit {
       id: this.deptId,
       name: this.deptName,
     }
-    this.deptArray.push(dept);
-    this.localStore.store("deptArray", this.deptArray);
+    this.deptArray.push(dept)
+    localStorage.setItem("deptArray", JSON.stringify(this.deptArray))
   }
 
   redirect(check: string){
     if(check === 'noSubmission')
     {
-      this.localStore.store("currDeptID", this.localStore.retrieve('currDeptID')-1)
+      localStorage.setItem("currDeptID", JSON.stringify(JSON.parse(localStorage.getItem('currDeptID')||'')-1))
     }
     this.router.navigate(['/department'])
   }
-
 }

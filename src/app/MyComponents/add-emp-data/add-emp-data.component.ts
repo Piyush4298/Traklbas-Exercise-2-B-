@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { EmployeeData } from 'src/app/dataUtil';
-import {LocalStorageService, SessionStorageService} from 'ngx-webstorage'
+
 
 @Component({
   selector: 'app-add-emp-data',
@@ -15,29 +15,31 @@ export class AddEmpDataComponent implements OnInit {
   empAge!: number
   empArray!: EmployeeData[]
   empObj = new EmployeeData()
-  constructor(private router: Router, private localStore: LocalStorageService, private sessionStore: SessionStorageService) {
-    if(this.localStore.retrieve("hasCodeRunBefore1") === null){
+
+  constructor(private router: Router) {
+    if(localStorage.getItem("hasCodeRunBefore1") === null ){
       this.empArray = [];
-      this.localStore.store("hasCodeRunBefore1", true);
-      this.localStore.store("currEmpID", 0);
+      localStorage.setItem("hasCodeRunBefore1", JSON.stringify(true))
+      localStorage.setItem("currEmpId", JSON.stringify(0))
     }
     else{
-      this.empArray = this.localStore.retrieve("empArray");
+      this.empArray = JSON.parse(localStorage.getItem("empArray") || "[]");
     }
 
   }
 
   ngOnInit(): void {
-    if(this.sessionStore.retrieve("fromEditEmployee") === false){
-      this.empId = this.localStore.retrieve("currEmpID") + 1
-      this.localStore.store("currEmpID", this.empId);
+    if(JSON.parse(sessionStorage.getItem("fromEditEmployee")|| '') === false){
+      
+      this.empId = +JSON.parse(localStorage.getItem("currEmpID")||'0') + 1
+      localStorage.setItem("currEmpID", JSON.stringify(this.empId));
     }
     else{
-      this.empObj = this.sessionStore.retrieve("empObjectToEdit")
+      this.empObj = JSON.parse(sessionStorage.getItem("empObjectToEdit")||'')
       this.empId = this.empObj.id
       this.empName = this.empObj.name
       this.empAge = this.empObj.age
-      this.sessionStore.store("fromEditEmployee", false)
+      sessionStorage.setItem("fromEditEmployee", JSON.stringify(false))
     }
   }
 
@@ -48,13 +50,13 @@ export class AddEmpDataComponent implements OnInit {
       age: this.empAge
     }
     this.empArray.push(emp);
-    this.localStore.store("empArray", this.empArray);
+    localStorage.setItem("empArray", JSON.stringify(this.empArray))
   }
 
   redirect(check: string){
     if(check === 'noSubmission')
     {
-      this.localStore.store("currEmpID", this.localStore.retrieve('currEmpID')-1)
+      localStorage.setItem("currEmpID", JSON.stringify(JSON.parse(localStorage.getItem("currEmpID")||'')-1))
     }
     this.router.navigate(['/employee'])
   }

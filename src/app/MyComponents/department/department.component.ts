@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { DepartmentData} from 'src/app/dataUtil';
-import { LocalStorageService, SessionStorageService } from 'ngx-webstorage';
 import { faSort, faAngleDoubleRight, faAngleDoubleLeft, faChevronRight, faChevronLeft} from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
 import { BaseComponent } from '../base/base.component';
@@ -23,66 +22,59 @@ export class DepartmentComponent extends BaseComponent<DepartmentData> implement
   deptData: DepartmentData[] = []
   
   filter: any
-  fromSearch: boolean = false
 
-  sortOrder : boolean = true
 
   page: number = 1
   totalPages: number = 1
   numberOfRecordsPerPage: number = 5
 
-  constructor(private localStore: LocalStorageService, private sessionStore: SessionStorageService, private router: Router) {
+  constructor(private router: Router) {
     super() // calling constructor of base class
   }
 
 
-  override ngOnInit(){
-    if(this.localStore.retrieve("currPageDept") === null){
-      this.localStore.store("currPageDept", 1)
+   ngOnInit(){
+    if(localStorage.getItem("currPageDept") === null){
+      localStorage.setItem("currPageDept", JSON.stringify(1))
     }
 
     // Setting the fromEditDepartment variable false
-    this.sessionStore.store("fromEditDepartment", false);
+    sessionStorage.setItem("fromEditDepartment", JSON.stringify(false));
 
-    // If ngOnInit() called from search function
-    if(!this.fromSearch){
-      this.totalDeptData = this.localStore.retrieve("deptArray")
-    }
+  
+    this.totalDeptData = JSON.parse(localStorage.getItem("deptArray") || "[]")
+    this.setPageData()
+  }
 
+  setPageData() {
     this.totalPages = Math.ceil(this.totalDeptData.length/this.numberOfRecordsPerPage)
-    this.page = this.localStore.retrieve("currPageDept")
+    this.page = JSON.parse(localStorage.getItem("currPageDept")||'1')
 
     // calling Generic paginate funtion to obtain trimmed data in correspondance to page number.
     this.deptData = this.paginate(this.totalDeptData, this.page, this.numberOfRecordsPerPage)
   }
+  
 
   /** Pagination Helper Functions */
-  first(){
-    if(this.page > 1){
-      this.localStore.store("currPageDept", 1)
-      this.ngOnInit()
-    }
+  first(pageLabel: string){
+    this.firtPage(pageLabel, this.page)
+    this.setPageData()
   }
 
-  prev(){
-    if(this.page > 1){
-      this.localStore.store("currPageDept", this.page - 1)
-      this.ngOnInit()
-    }
+  prev(pageLabel: string){
+    this.prevPage(pageLabel, this.page)
+    this.setPageData()
   }
 
-  next(){
-    if(this.page < this.totalPages){
-      this.localStore.store("currPageDept", this.page + 1)
-      this.ngOnInit()
-    }
+  next(pageLabel: string){
+    this.nextPage(pageLabel, this.page, this.totalPages)
+    this.setPageData()
+
   }
 
-  last(){
-    if(this.page < this.totalPages){
-      this.localStore.store("currPageDept", this.totalPages)
-      this.ngOnInit()
-    }
+  last(pageLabel: string){
+    this.lastPage(pageLabel, this.page, this.totalPages)
+    this.setPageData()
   }
 
   /**
@@ -90,10 +82,8 @@ export class DepartmentComponent extends BaseComponent<DepartmentData> implement
    * @param key Column name according to which data is to be sorted.
    */
    sort(key: string){
-    const arr = this.sortData(this.totalDeptData, this.sortOrder, key)
-    this.sortOrder = !this.sortOrder
-    this.localStore.store("deptArray", arr)
-    this.ngOnInit()
+    const arr = this.sortData(this.totalDeptData, key)
+    this.deptData = arr
   }
 
   /**
@@ -101,38 +91,33 @@ export class DepartmentComponent extends BaseComponent<DepartmentData> implement
    */
    search(){
     this.totalDeptData = this.searchData(this.totalDeptData, this.filter)
-    this.fromSearch = true
-    this.ngOnInit()
+    this.setPageData()
   }
 
   clear(){
     this.filter = ''
-    this.fromSearch = false;
-    this.ngOnInit()
+    this.totalDeptData = JSON.parse(localStorage.getItem("deptArray") || "[]")
+    this.setPageData()
   }
 
   /**
    * Delete Function
    * @param dept Department object which is to be deleted.
    */
-  onDelete(dept: any){
-    if(confirm(`Do you want to delete this record of ${dept.name}`))
-    {
-      this.totalDeptData = this.deleteData(this.totalDeptData, dept)
-      this.localStore.store("deptArray", this.totalDeptData)
-      this.ngOnInit()
-    }
+  onDelete(dept: DepartmentData, arrayName: string){
+    this.deleteData(this.totalDeptData, dept, arrayName)
+    this.setPageData()
   }
 
   /**
    * Edit Function
    * @param dept Department object which is to be edited.
    */
-  onEdit(dept: any){
+  onEdit(dept: DepartmentData){
     const idx = this.totalDeptData.indexOf(dept)
     this.totalDeptData.splice(idx, 1)
-    this.sessionStore.store("deptObjectToEdit", dept)
-    this.sessionStore.store("fromEditDepartment", true);
+    sessionStorage.setItem("deptObjectToEdit", JSON.stringify(dept))
+    sessionStorage.setItem("fromEditDepartment", JSON.stringify(true))
     this.router.navigate(['/addDeptData'])
   }
 

@@ -8,10 +8,8 @@ import { EmployeeComponent } from './MyComponents/employee/employee.component';
 import { DepartmentComponent } from './MyComponents/department/department.component';
 import { HomeComponent } from './MyComponents/home/home.component';
 import { FormsModule } from '@angular/forms';
-import { DataTablesModule } from 'angular-datatables';
 import { AddEmpDataComponent } from './MyComponents/add-emp-data/add-emp-data.component';
 import { AddDeptDataComponent } from './MyComponents/add-dept-data/add-dept-data.component';
-import { NgxWebstorageModule } from 'ngx-webstorage';
 
 import { AuthguardService } from './services/authguard.service';
 import { AuthService } from './services/auth.service';
@@ -34,8 +32,6 @@ import { BaseComponent } from './MyComponents/base/base.component';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    DataTablesModule,
-    NgxWebstorageModule.forRoot(),
     FontAwesomeModule
   ],
   providers: [AuthguardService, AuthService],

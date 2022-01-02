@@ -9,9 +9,5 @@ import { AuthService } from './services/auth.service';
 export class AppComponent {
   title = 'Exercise-two';
 
-  constructor(private authService: AuthService){}
-
-  logOut(){
-    this.authService.logout()
-  }
+  constructor(){}
 }

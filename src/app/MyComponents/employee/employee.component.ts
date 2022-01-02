@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { EmployeeData } from 'src/app/dataUtil';
-import { LocalStorageService, SessionStorageService } from 'ngx-webstorage';
 import { faSort, faChevronLeft, faChevronRight, faAngleDoubleLeft, faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
 import { BaseComponent } from '../base/base.component';
@@ -24,66 +23,57 @@ export class EmployeeComponent extends BaseComponent<EmployeeData> implements On
   empData: EmployeeData[] = []
   
   filter: any
-  fromSearch: boolean = false
-
-  sortOrder : boolean = true
 
   page: number = 1
   totalPages: number = 1
   numberOfRecordsPerPage: number = 5 
 
   
-  constructor(private localStore: LocalStorageService, private sessionStore: SessionStorageService, private router: Router) {
+  constructor(private router: Router) {
     super() // calling constructor of base class
   }
 
 
-  override ngOnInit(){
-    if(this.localStore.retrieve("currPageEmp") === null){
-      this.localStore.store("currPageEmp", 1)
+    ngOnInit(){
+    if(localStorage.getItem("currPageEmp") === null){
+      localStorage.setItem("currPageEmp", JSON.stringify(1))
     }
+  
     // Setting the fromEditEmployee variable false
-    this.sessionStore.store("fromEditEmployee", false);
+    sessionStorage.setItem("fromEditEmployee", JSON.stringify(false));
+    this.totalEmpData = JSON.parse(localStorage.getItem("empArray") || "[]")
 
-    // If ngOnInit() called from search function
-    if(!this.fromSearch){
-      this.totalEmpData = this.localStore.retrieve("empArray")
-    }
+    this.setPageData();
+  }
 
+  setPageData(){
     this.totalPages = Math.ceil(this.totalEmpData.length/this.numberOfRecordsPerPage)
-    this.page = this.localStore.retrieve("currPageEmp")
+    this.page = JSON.parse(localStorage.getItem("currPageEmp")||'1')
 
     // calling Generic paginate funtion to obtain trimmed data in correspondance to page number.
     this.empData = this.paginate(this.totalEmpData, this.page, this.numberOfRecordsPerPage)
   }
 
   /** Pagination Helper Functions */
-  first(){
-    if(this.page > 1){
-      this.localStore.store("currPageEmp", 1)
-      this.ngOnInit()
-    }
+  first(pageLabel: string){
+    this.firtPage(pageLabel, this.page)
+    this.setPageData()
   }
 
-  prev(){
-    if(this.page > 1){
-      this.localStore.store("currPageEmp", this.page - 1)
-      this.ngOnInit()
-    }
+  prev(pageLabel: string){
+    this.prevPage(pageLabel, this.page)
+    this.setPageData()
   }
 
-  next(){
-    if(this.page < this.totalPages){
-      this.localStore.store("currPageEmp", this.page + 1)
-      this.ngOnInit()
-    }
+  next(pageLabel: string){
+    this.nextPage(pageLabel, this.page, this.totalPages)
+    this.setPageData()
+
   }
 
-  last(){
-    if(this.page < this.totalPages){
-      this.localStore.store("currPageEmp", this.totalPages)
-      this.ngOnInit()
-    }
+  last(pageLabel: string){
+    this.lastPage(pageLabel, this.page, this.totalPages)
+    this.setPageData()
   }
 
   /**
@@ -91,10 +81,8 @@ export class EmployeeComponent extends BaseComponent<EmployeeData> implements On
    * @param key Column name according to which data is to be sorted.
    */
   sort(key: string){
-    const arr = this.sortData(this.totalEmpData, this.sortOrder, key)
-    this.sortOrder = !this.sortOrder
-    this.localStore.store("empArray", arr)
-    this.ngOnInit()
+    const arr = this.sortData(this.totalEmpData, key)
+    this.empData = arr
   }
 
   /**
@@ -102,38 +90,33 @@ export class EmployeeComponent extends BaseComponent<EmployeeData> implements On
    */
   search(){
     this.totalEmpData = this.searchData(this.totalEmpData, this.filter)
-    this.fromSearch = true
-    this.ngOnInit()
+    this.setPageData()
   }
 
   clear(){
     this.filter = ''
-    this.fromSearch = false
-    this.ngOnInit()
+    this.totalEmpData = JSON.parse(localStorage.getItem("empArray") || "[]")
+    this.setPageData()
   }
 
   /**
    * Delete Function
    * @param emp Employee object which is to be deleted.
    */
-  onDelete(emp: any){
-    if(confirm(`Do you want to delete this record of Mr./Mrs. ${emp.name}`))
-    {
-      this.totalEmpData = this.deleteData(this.totalEmpData, emp)
-      this.localStore.store("empArray", this.totalEmpData)
-      this.ngOnInit()
-    }
+  onDelete(emp: EmployeeData, arrayName: string){
+    this.deleteData(this.totalEmpData, emp, arrayName)
+    this.setPageData()
   }
 
   /**
    * Edit Function
    * @param emp Employee object which is to be edited.
    */
-  onEdit(emp: any){
+  onEdit(emp: EmployeeData){
     const idx = this.totalEmpData.indexOf(emp)
     this.totalEmpData.splice(idx, 1)
-    this.sessionStore.store("empObjectToEdit", emp)
-    this.sessionStore.store("fromEditEmployee", true);
+    sessionStorage.setItem("empObjectToEdit", JSON.stringify(emp))
+    sessionStorage.setItem("fromEditEmployee", JSON.stringify(true))
     this.router.navigate(['/addEmpData'])
   }
 }
